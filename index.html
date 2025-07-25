@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang = "zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>STARRY SKY FOR YOUR MEMORY</title>
+    <style>
+        body{
+            background-color:rgb(206, 228, 228);
+            font-family: sans-serif;
+            text-align: center;
+            color: #333;
+            padding-top: 50px;
+        }
+        .input-box {
+            padding: 12px;
+            width: 60%;
+            font-size: 16px;
+            border: 1px dashed #aaccee;
+            border-radius: 12px;
+            background-color: #f7fbff;
+        }
+        .btn{
+            padding: 5px 10px;
+            background-color: #83d6dc;
+            color: rgba(15, 51, 69, 0.716);
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .btn:hover { 
+            background-color: #008ecc;
+            color: #f7fbff;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to your starry sky!</h1>
+    <p>在这里，记录生活中细碎的发光时刻。</p>
+    <img src="C:\Users\23798\OneDrive\图片\微信图片_20230819231402.jpg" alt="背景图" width="60%" style="border-radius: 10px;box-shadow:0 0 10px #b0c4de;">
+    <p></p>
+    <input 
+        type="text" 
+        class="input-box" 
+        id="memoryInput" 
+        placeholder="将美好瞬间留在这里。"
+    />
+    <br /><br />
+    <button class="btn" id="recordBtn">记录</button> 
+
+    <div id = "recordList"></div>
+
+    <p>- 与烟岚居秋水，舣楫而溯洄 -</p>
+
+    <script>
+        const input = document.getElementById("memoryInput");
+        const button = document.getElementById("recordBtn");
+        const recordList = document.getElementById("recordList");
+
+        button.addEventListener("click",function() {
+            const text = input.value.trim();
+
+            if(text === ""){
+                alert("请输入一点什么再添加吧~");
+                return;
+            }
+
+            const now = new Date();
+            const time = now.toLocaleString();
+
+            const newRecord = document.createElement("div");
+            newRecord.innerHTML = `
+            <p style ="padding:10px; background: #f0f8ff; border-border-radius: 10px; margin:10px auto;width: 60%;box-shadow:0 0 5px #ccc;" >
+             <strong>${time}</strong><br />${text}
+            </p>        
+        `;
+            recordList.prepend(newRecord);
+            input.value = "";
+        })
+    </script>
+</body>
+</html>
