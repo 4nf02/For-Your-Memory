@@ -41,7 +41,7 @@
 <body>
     <h1>Welcome to your starry sky!</h1>
     <p>在这里，记录生活中细碎的发光时刻。</p>
-    <img src="C:\Users\23798\OneDrive\图片\微信图片_20230819231402.jpg" alt="背景图" width="60%" style="border-radius: 10px;box-shadow:0 0 10px #b0c4de;">
+    <img src="images\background.jpg" alt="背景图" width="60%" style="border-radius: 10px;box-shadow:0 0 10px #b0c4de;">
     <p></p>
     <input 
         type="text" 
@@ -51,7 +51,7 @@
     />
     <br /><br />
     <button class="btn" id="recordBtn">记录</button> 
-
+    <button class="btn" id="clearBtn">清空全部</button>
     <div id = "recordList"></div>
 
     <p>- 与烟岚居秋水，舣楫而溯洄 -</p>
@@ -60,6 +60,11 @@
         const input = document.getElementById("memoryInput");
         const button = document.getElementById("recordBtn");
         const recordList = document.getElementById("recordList");
+
+        const savedRecords = JSON.parse(localStorage.getItem("records")) || [];
+        savedRecords.forEach(record => {
+            addRecordToPage(record.text,record.time);
+        });
 
         button.addEventListener("click",function() {
             const text = input.value.trim();
@@ -72,15 +77,50 @@
             const now = new Date();
             const time = now.toLocaleString();
 
+            addRecordToPage(text, time);
+            savedRecords.unshift({text,time});
+            localStorage.setItem("records",JSON.stringify(savedRecords));
+
+            input.value  = "";
+        });
+
+        const clearButton = document.getElementById("clearBtn");
+        clearButton.addEventListener("click",function(){
+            if(confirm("确定要清空所有记录吗？")){
+                localStorage.removeItem("records");
+                recordList.innerHTML="";
+                savedRecords.length = 0;
+            }
+        });
+
+        function addRecordToPage(text,time){
             const newRecord = document.createElement("div");
+            newRecord.style.position = "relative";
+
             newRecord.innerHTML = `
-            <p style ="padding:10px; background: #f0f8ff; border-border-radius: 10px; margin:10px auto;width: 60%;box-shadow:0 0 5px #ccc;" >
-             <strong>${time}</strong><br />${text}
-            </p>        
-        `;
+                <p style="padding: 10px; background :#f0f8ff; border-radius: 8px; margin: 10px auto; width: 60%; box-shadow:0 0 5px #ccc;">
+                    <strong>${time}</strong><br />${text}
+                    <span class="delete-btn" style="position: absolute; top: 8px; right: 15%; cursor: pointer; color: red; font-weight: bold;">🗑️</span>
+                </p>
+            `;
+
+
+            const deleteBtn = newRecord.querySelector(".delete-btn");
+            deleteBtn.addEventListener("click",function(){
+                if(confirm("确定要删除这条记录吗？")){
+                    newRecord.remove();
+
+                    const index = savedRecords.findIndex(
+                        r => r.text === text && r.time === time
+                    );
+                    if(index !== -1){
+                        savedRecords.splice(index, 1);
+                        localStorage.setItem("records", JSON.stringify(savedRecords));
+                    }
+                }
+            });
             recordList.prepend(newRecord);
-            input.value = "";
-        })
+        }
     </script>
 </body>
 </html>
